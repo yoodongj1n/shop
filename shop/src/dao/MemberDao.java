@@ -37,7 +37,7 @@ public class MemberDao {
 		// 로그인 성공시 리턴값 Member : memberId + memberName
 		// 로그인 실패시 리턴값 Member : null
 		public Member login(Member member) throws ClassNotFoundException, SQLException {
-			Member returnMebmer = null;
+			Member returnMembmer = null;
 			// 매개변수값은 무조건! 디버깅
 			System.out.println(member.getMemberId()+" <-- MemberDao.login param : memberId");
 			System.out.println(member.getMemberPw()+" <-- MemberDao.login param : memberPw");
