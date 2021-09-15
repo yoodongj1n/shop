@@ -10,11 +10,11 @@
 <%
 	request.setCharacterEncoding("utf-8");
 %>
-	<!-- start : submenu include -->
+	<!-- start : mainMenu include -->
 	<div>
-		<jsp:include page="/partial/submenu.jsp"></jsp:include>
+		<jsp:include page="/partial/mainMenu.jsp"></jsp:include>
 	</div>
-	<!-- end : submenu include -->
+	<!-- end : mainMenu include -->
 	<h1>메인페이지</h1>
 <%
 	if(session.getAttribute("loginMember") == null) {
@@ -31,7 +31,16 @@
 		<!-- 로그인 -->
 		<div><%=loginMember.getMemberName()%>님 반갑습니다.<a href="./logout.jsp">로그아웃</a></div>
 		<div><a href="./selectMemberOne.jsp">회원정보</a></div>
-<%	
+		<!-- 관리자 페이지로 가는 링크 -->
+		<%
+			if(loginMember.getMemberLevel() > 0) {
+		%>
+			<div><a href="<%=request.getContextPath()%>/admin/adminIndex.jsp">관리자 페이지</a></div>
+		<%			
+			}
+		%>
+		
+<%		
 	}
 %>
 	

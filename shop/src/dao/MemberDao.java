@@ -3,10 +3,148 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import commons.Comm;
 import vo.Member;
+
 public class MemberDao {
+	
+
+	// [관리자] 회원 관리  검색 목록 출력
+	public ArrayList<Member> selectMemberListAllBySearchMemberId(int beginRow, int rowPerPage, String searchMemberId) throws SQLException, ClassNotFoundException {
+		ArrayList<Member> list = new ArrayList<Member>();
+		System.out.println(beginRow+"<<beinRow");
+		System.out.println(rowPerPage+"<<rowPerPage");
+		System.out.println(searchMemberId+"<<searchMemberId");
+		/*
+		 SELECT
+		 	member_no memberNo,
+		 	member_id memberId,
+		 	member_level memberLevel,
+		 	member_name memberName,
+		 	member_age memberAge,
+		 	member_gender memberGender,
+		 	update_date updateDate,
+		 	create_date createDate
+		 	FROM member 
+			WHERE member_id LIKE ?
+			ORDER BY create_date DESC 
+			LIMIT ?,?
+		 */
+		//db접속 메소드 호출
+		Comm comm = new Comm();
+		Connection conn = comm.getConnection();
+		//쿼리 생성 및 실행
+		String sql = "SELECT member_no memberNo, member_id memberId, member_level memberLevel, member_name memberName, member_age memberAge, member_gender memberGender, update_date updateDate, create_date createDate FROM member WHERE member_id LIKE ? ORDER BY create_date DESC LIMIT ?,?";
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setString(1, "%"+searchMemberId+"%");
+		stmt.setInt(2, beginRow);
+		stmt.setInt(3, rowPerPage);
+		ResultSet rs = stmt.executeQuery();
+		//리스트에 값 넣기
+		while(rs.next()) {
+				Member member = new Member();
+				member.setMemberNo(rs.getInt("memberNo"));
+				member.setMemberId(rs.getString("memberId"));
+				member.setMemberLevel(rs.getInt("memberLevel"));
+				member.setMemberName(rs.getString("memberName"));
+				member.setMemberAge(rs.getInt("memberAge"));
+				member.setMemberGender(rs.getString("memberGender"));
+				member.setUpdateDate(rs.getString("updateDate"));
+				member.setCreateDate(rs.getString("createDate"));
+				list.add(member);
+		}
+		//접속 종료
+		rs.close();
+		stmt.close();
+		conn.close();
+		//값 리턴
+		return list;
+	}
+	
+	
+	
+	
+	
+	// [관리자] 회원목록출력
+		public ArrayList<Member> selectMemberListAllByPage(int beginRow, int rowPerPage) throws SQLException, ClassNotFoundException {
+			ArrayList<Member> list = new ArrayList<Member>();
+			System.out.println(beginRow + "<<beinRow");
+			System.out.println(rowPerPage + "<<rowPerPage");
+			/*
+			 SELECT
+			 	member_no memberNo,
+			 	member_id memberId,
+			 	member_level memberLevel,
+			 	member_name memberName,
+			 	member_age memberAge,
+			 	member_gender memberGender,
+			 	update_date updateDate,
+			 	create_date createDate
+			 */
+			//db접속 메소드 호출
+			Comm comm = new Comm();
+			Connection conn = comm.getConnection();
+			//쿼리 생성 및 실행
+			String sql = "SELECT member_no memberNo, member_id memberId, member_level memberLevel, member_name memberName, member_age memberAge, member_gender memberGender, update_date updateDate, create_date createDate FROM member ORDER BY create_date DESC LIMIT ?,?";
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, beginRow);
+			stmt.setInt(2, rowPerPage);
+			ResultSet rs = stmt.executeQuery();
+			//리스트에 값 넣기
+			while(rs.next()) {
+					Member member = new Member();
+					member.setMemberNo(rs.getInt("memberNo"));
+					member.setMemberId(rs.getString("memberId"));
+					member.setMemberLevel(rs.getInt("memberLevel"));
+					member.setMemberName(rs.getString("memberName"));
+					member.setMemberAge(rs.getInt("memberAge"));
+					member.setMemberGender(rs.getString("memberGender"));
+					member.setUpdateDate(rs.getString("updateDate"));
+					member.setCreateDate(rs.getString("createDate"));
+					list.add(member);
+			}
+			//접속 종료
+			rs.close();
+			stmt.close();
+			conn.close();
+			//값 리턴
+			return list;
+		}
+			//총 멤버 수
+			public int totalMemberCount() throws ClassNotFoundException, SQLException {
+				int totalCount = 0 ;
+				//db접속 메소드 호출
+				Comm comm = new Comm();
+				Connection conn = comm.getConnection();
+				//쿼리생성, 실행
+				String sql = "SELECT count(*) FROM member";
+				PreparedStatement stmt = conn.prepareStatement(sql);
+				
+				ResultSet rs= stmt.executeQuery();
+				while(rs.next()) {
+					totalCount = rs.getInt("count(*)");
+				}
+				
+				return totalCount;
+			}
+			public int totalMemberCount(String searchMemberId) throws ClassNotFoundException, SQLException {
+				int totalCount = 0 ;
+				//db접속 메소드 호출
+				Comm comm = new Comm();
+				Connection conn = comm.getConnection();
+				//쿼리생성, 실행
+				String sql = "SELECT count(*) FROM member WHERE member_id LIKE ?";
+				PreparedStatement stmt = conn.prepareStatement(sql);
+				stmt.setString(1, "%"+searchMemberId+"%");
+				ResultSet rs= stmt.executeQuery();
+				while(rs.next()) {
+					totalCount = rs.getInt("count(*)");
+				}
+				
+				return totalCount;
+			}
 		
 		// 1. 회원가입
 		public int insertMember(Member member) throws ClassNotFoundException, SQLException {
