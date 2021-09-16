@@ -9,8 +9,67 @@ import commons.Comm;
 import vo.Member;
 
 public class MemberDao {
+	// memberNo와 수정된 level을 입력하여 수정
+	public void updateMemberLevelByAdmin(Member member) throws ClassNotFoundException, SQLException {
+		System.out.println(member.getMemberNo()+"<<memberNo");
+		System.out.println(member.getMemberLevel()+"<<memberLevel");
+		//db접속 메소드 호출
+		Comm comm = new Comm();
+		Connection conn = comm.getConnection();
+		
+		String sql = "UPDATE member SET member_level=? WHERE member_no=?";
+	    PreparedStatement stmt = conn.prepareStatement(sql);
+	    stmt.setInt(1, member.getMemberLevel());
+	    stmt.setInt(2, member.getMemberNo());
+	    ResultSet rs = stmt.executeQuery();
+	    // 디버깅
+	    System.out.println(stmt + " <-- stmt");
+	    
+ 		rs.close();
+ 		stmt.close();
+ 		conn.close();
+	}
 	
-
+	// memberNo와 수정된 PW를 입력하여수정
+	public void updateMemberPwByAdmin(Member member, String memberNewPw) throws ClassNotFoundException, SQLException {
+		System.out.println(member.getMemberNo()+"<<memberNo");
+		System.out.println(member.getMemberPw()+"<<memberPw");
+		
+		//db접속 메서드 호출
+		Comm comm = new Comm();
+		Connection conn = comm.getConnection();
+		String sql = "UPDATE member SET member_pw=PASSWORD(?) WHERE member_no=?";
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setString(1, memberNewPw);
+		stmt.setInt(2, member.getMemberNo());
+		// 디버깅
+		System.out.println(stmt + "<--- stmt");
+		
+		stmt.executeUpdate();
+		
+		stmt.close();
+		conn.close();
+	}
+		
+	// memberNo입력하면 삭제하는 메서드(강제탈퇴)
+	public void deleteMemberByAdmin(int memberNo) throws ClassNotFoundException, SQLException {
+		System.out.println(memberNo+"<<memberNo");
+		
+		//db접속 메서드 호출
+		Comm comm = new Comm();
+		Connection conn = comm.getConnection();
+		String sql = "DELETE FROM member WHERE member_no=?";
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setInt(1, memberNo);
+		// 디버깅
+		System.out.println(stmt + "<--- stmt");
+		
+		stmt.executeUpdate();
+		
+		stmt.close();
+		conn.close();
+	}
+	
 	// [관리자] 회원 관리  검색 목록 출력
 	public ArrayList<Member> selectMemberListAllBySearchMemberId(int beginRow, int rowPerPage, String searchMemberId) throws SQLException, ClassNotFoundException {
 		ArrayList<Member> list = new ArrayList<Member>();

@@ -10,7 +10,7 @@
 	Member loginMember = (Member)session.getAttribute("loginMember");
 	//로그인 멤버값이 없거나 memberLevel이 1미만(일반 사용자)일때는 접근 불가. 순서를 바꾸면안됨(바꾸면 null포인트 인셉션이 일어남).
 	if(loginMember==null || loginMember.getMemberLevel() < 1){
-		response.sendRedirect(request.getContextPath()+"/index.jsp");
+		response.sendRedirect(request.getContextPath()+"/index1.jsp");
 		return;	
 	}
 	
@@ -70,6 +70,9 @@
 			 	<th>memberGender</th>
 			 	<th>updateDate</th>
 			 	<th>createDate</th>
+			 	<th>등급수정</th>
+			 	<th>비밀번호수정</th>
+			 	<th>강제탈퇴</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -98,6 +101,12 @@
 						<td><%=m.getMemberGender()%></td>
 						<td><%=m.getUpdateDate()%></td>
 						<td><%=m.getCreateDate()%></td>
+						<!-- 특정회원의 등급을 수정 -->
+						<td><a href="<%=request.getContextPath()%>/admin/updateMemberLevelForm.jsp?memberNo=<%=m.getMemberNo()%>">등급수정</a></td>
+					 	<!-- 특정회원의 비밀번호를 수정 -->
+					 	<td><a href="<%=request.getContextPath()%>/admin/updateMemberPwForm.jsp?memberNo=<%=m.getMemberNo()%>">비밀번호수정</a></td>
+					 	<!-- 특정회원을 강제탈퇴 -->
+					 	<td><a href="<%=request.getContextPath()%>/admin/deleteMember.jsp?memberNo=<%=m.getMemberNo()%>">강제탈퇴</a></td>
 					</tr>
 			<%	
 				}
